@@ -125,9 +125,15 @@ impl Giphy {
             }
         };
 
-        // Try to deserialize the response.
-        let r: Response = resp.json().await.unwrap();
-        Ok(r.data)
+        match resp.json::<Response>().await {
+            Ok(r) => Ok(r.data),
+            Err(e) => {
+                return Err(APIError {
+                status_code: StatusCode::NO_CONTENT,
+                body: format!("{}", e),
+            })
+            }
+        }
     }
 }
 
